@@ -420,7 +420,7 @@ void Object3d::CreateModel()
 		getline(line_stream, key, ' ');
 
 		//先頭文字列がvなら頂点座標
-		if (key=="v")
+		if (key == "v")
 		{
 			//X,Y,Z座標読み込み
 			XMFLOAT3 position{};
@@ -436,11 +436,11 @@ void Object3d::CreateModel()
 		}
 
 		//先頭文字列がfならポリゴン(三角形)
-		if (key=="f")
+		if (key == "f")
 		{
 			//半角スペース区切りで行の続きを読み込む
 			string index_string;
-			while (getline(line_stream,index_string,' '))
+			while (getline(line_stream, index_string, ' '))
 			{
 				//頂点インデックス1個分の文字列をストリームに変換して解析しやすくする
 				std::istringstream index_stream(index_string);
@@ -572,7 +572,7 @@ void Object3d::CreateModel()
 	//	XMStoreFloat3(&vertices[index2].normal, normal);
 	//}
 
-UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
 	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
 
 	// ヒーププロパティ
