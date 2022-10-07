@@ -33,7 +33,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/background.png");
-
+	//テクスチャ2番に読み込み
+	Sprite::LoadTexture(2, L"Resources/texture.png");
+	
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	
@@ -42,8 +44,6 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	object3d->Update();
 
 	//前景スプライト生成
-	//テクスチャ2番に読み込み
-	Sprite::LoadTexture(2, L"Resources/texture.png");
 	//座標{0,0}にテクスチャ2番のスプライトを生成
 	sprite1 = Sprite::Create(2, { 0.0f,0.0f });
 	//座標{500,500}にテクスチャ2番のスプライトを生成
