@@ -1,9 +1,14 @@
 ﻿#include "Object3d.h"
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <Vector>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
+using namespace std;
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
@@ -33,13 +38,13 @@ D3D12_INDEX_BUFFER_VIEW Object3d::ibView{};
 Object3d::VertexPosNormalUv Object3d::vertices[vertexCount];
 unsigned short Object3d::indices[planeCount * 3];
 
-void Object3d::StaticInitialize(ID3D12Device * device, int window_width, int window_height)
+void Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 	// nullptrチェック
 	assert(device);
 
 	Object3d::device = device;
-		
+
 	// デスクリプタヒープの初期化
 	InitializeDescriptorHeap();
 
@@ -57,7 +62,7 @@ void Object3d::StaticInitialize(ID3D12Device * device, int window_width, int win
 
 }
 
-void Object3d::PreDraw(ID3D12GraphicsCommandList * cmdList)
+void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	assert(Object3d::cmdList == nullptr);
@@ -79,7 +84,7 @@ void Object3d::PostDraw()
 	Object3d::cmdList = nullptr;
 }
 
-Object3d * Object3d::Create()
+Object3d* Object3d::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
 	Object3d* object3d = new Object3d();
@@ -131,7 +136,7 @@ void Object3d::CameraMoveVector(XMFLOAT3 move)
 void Object3d::InitializeDescriptorHeap()
 {
 	HRESULT result = S_FALSE;
-	
+
 	// デスクリプタヒープを生成	
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -322,7 +327,7 @@ void Object3d::LoadTexture()
 	ScratchImage scratchImg{};
 
 	// WICテクスチャのロード
-	result = LoadFromWICFile( L"Resources/tex1.png", WIC_FLAGS_NONE, &metadata, scratchImg);
+	result = LoadFromWICFile(L"Resources/tex1.png", WIC_FLAGS_NONE, &metadata, scratchImg);
 	assert(SUCCEEDED(result));
 
 	ScratchImage mipChain{};
@@ -389,7 +394,33 @@ void Object3d::LoadTexture()
 void Object3d::CreateModel()
 {
 	HRESULT result = S_FALSE;
+	//ファイルストリーム
+	std::ifstream file;
+	//objファイルを開く
+	file.open("Resource/triangle/triangle.obj");
+	//ファイルオープン失敗をチェック
+	if (file.fail())
+	{
+		assert(0);
+	}
 
+	vector<XMFLOAT3> positions;					//頂点座標
+	vector<XMFLOAT3> normals;					//法線ベクトル
+	vector<XMFLOAT2> texcoords;					//テクスチャUV
+	//1行ずつ読み込む
+	string line;
+	while (getline(file, line))
+	{
+		//1行分の文字列をストリームに返還して解析しやすくする
+		std::istringstream line_stream(line);
+		//半角スペース区切りで行の先頭文字列を取得
+		string key;
+		getline(line_stream, key, ' ');
+
+		//先頭文字列がvなら頂点座標
+	}
+	//ファイルを閉じる
+	file.close();
 	std::vector<VertexPosNormalUv> realVertices;
 	// 頂点座標の計算（重複あり）
 	{
@@ -631,7 +662,7 @@ void Object3d::Draw()
 	// nullptrチェック
 	assert(device);
 	assert(Object3d::cmdList);
-		
+
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファの設定
