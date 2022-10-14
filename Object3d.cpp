@@ -467,10 +467,26 @@ void Object3d::CreateModel()
 			{
 				//頂点インデックス1個分の文字列をストリームに変換して解析しやすくする
 				std::istringstream index_stream(index_string);
-				unsigned short indexPosition;
+				unsigned short indexPosition, indexTexcoord, indexNormal;
 				index_stream >> indexPosition;
+				//スラッシュを飛ばす
+				index_stream.seekg(1, ios_base::cur);
+				index_stream >> indexTexcoord;
+				//スラッシュを飛ばす
+				index_stream.seekg(1, ios_base::cur);
+				index_stream >> indexNormal;
+				
+				//頂点データの追加
+				VertexPosNormalUv vertex{};
+				vertex.pos = positions[indexPosition - 1];
+				vertex.normal = normals[indexNormal - 1];
+				vertex.uv = texcoords[indexTexcoord - 1];
+				vertices.emplace_back(vertex);
+
+				//インデックスデータの追加
+				
 				//頂点インデックスに追加
-				indices.emplace_back(indexPosition - 1);
+				indices.emplace_back((unsigned short)indices.size());
 			}
 		}
 	}
