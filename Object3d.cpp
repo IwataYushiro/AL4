@@ -401,7 +401,11 @@ void Object3d::CreateModel()
 	//ファイルストリーム
 	std::ifstream file;
 	//objファイルを開く
-	file.open("Resources/triangle_tex/triangle_tex.obj");
+	const string modelname = "triangle_mat";
+	const string filename = modelname+".obj";					//"triangle_mat.obj"
+	const string directoryPath = "Resources/" + modelname + "/";//"Resources/triangle_mat/"
+
+	file.open(directoryPath+filename);//"Resources/triangle_mat/triangle_mat.obj"
 	//ファイルオープン失敗をチェック
 	if (file.fail())
 	{
@@ -421,6 +425,14 @@ void Object3d::CreateModel()
 		string key;
 		getline(line_stream, key, ' ');
 
+		//先頭文字列がmtllibならマテリアル
+		if (key=="mtllib")
+		{
+			//マテリアルのファイル名読み込み
+			string filename;
+			line_stream >> filename;
+			//マテリアル読み込み
+		}
 		//先頭文字列がvなら頂点座標
 		if (key == "v")
 		{
