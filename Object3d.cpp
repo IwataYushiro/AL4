@@ -449,7 +449,13 @@ void Object3d::CreateModel()
 		if (key=="vn")
 		{
 			//X,Y,Z成分読み込み
+			XMFLOAT3 normal{};
+			line_stream >> normal.x;
+			line_stream >> normal.y;
+			line_stream >> normal.z;
+
 			//法線ベクトルデータに追加
+			normals.emplace_back(normal);
 		}
 
 		//先頭文字列がfならポリゴン(三角形)
