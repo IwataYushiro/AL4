@@ -1,4 +1,4 @@
-mtllib triangke_mat.mtl
+mtllib triangle_mat.mtl
 
 v -0.5 -0.5 0.0
 v +0.0 +0.5 0.0
