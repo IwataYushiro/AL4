@@ -30,10 +30,19 @@ public: // サブクラス
 	};
 
 	// 定数バッファ用データ構造体
-	struct ConstBufferData
+	struct ConstBufferDataB0
 	{
-		XMFLOAT4 color;	// 色 (RGBA)
+		//XMFLOAT4 color;	// 色 (RGBA)
 		XMMATRIX mat;	// ３Ｄ変換行列
+	};
+	struct ConstBufferDataB1
+	{
+		XMFLOAT3 ambient;	// アンビエント係数
+		float pad1;			// パディング
+		XMFLOAT3 diffuse;	// ディフューズ係数
+		float pad2;			// パディング
+		XMFLOAT3 specular;	// スペキュラー係数
+		float alpha;		// アルファ値
 	};
 	//マテリアル
 	struct Material
@@ -220,7 +229,8 @@ public: // メンバ関数
 	void SetPosition(const XMFLOAT3& position) { this->position = position; }
 
 private: // メンバ変数
-	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール
