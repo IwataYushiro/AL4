@@ -147,7 +147,7 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12Resource> texbuff;
 	// シェーダリソースビューのハンドル(CPU)
 	static CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
-	// シェーダリソースビューのハンドル(CPU)
+	// シェーダリソースビューのハンドル(GPU)
 	static CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 	// ビュー行列
 	static XMMATRIX matView;
@@ -236,15 +236,15 @@ private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
-	// ローカルスケール
+	/// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
-	// X,Y,Z軸回りのローカル回転角
+	/// X,Y,Z軸回りのローカル回転角
 	XMFLOAT3 rotation = { 0,0,0 };
-	// ローカル座標
+	/// ローカル座標
 	XMFLOAT3 position = { 0,0,0 };
-	// ローカルワールド変換行列
+	/// ローカルワールド変換行列
 	XMMATRIX matWorld;
-	// 親オブジェクト
+	/// 親オブジェクト
 	Object3d* parent = nullptr;
 };
 
