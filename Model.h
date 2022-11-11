@@ -26,11 +26,6 @@ public: // サブクラス
 	};
 
 	// 定数バッファ用データ構造体
-	struct ConstBufferDataB0
-	{
-		//XMFLOAT4 color;	// 色 (RGBA)
-		XMMATRIX mat;	// ３Ｄ変換行列
-	};
 	struct ConstBufferDataB1
 	{
 		XMFLOAT3 ambient;	// アンビエント係数
@@ -82,15 +77,17 @@ private:
 	// シェーダリソースビューのハンドル(GPU)
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 	// 頂点バッファビュー
-	static D3D12_VERTEX_BUFFER_VIEW vbView;
+	D3D12_VERTEX_BUFFER_VIEW vbView;
 	// インデックスバッファビュー
-	static D3D12_INDEX_BUFFER_VIEW ibView;
+	D3D12_INDEX_BUFFER_VIEW ibView;
 	// 頂点データ配列
-	static std::vector<VertexPosNormalUv> vertices;
+	std::vector<VertexPosNormalUv> vertices;
 	// 頂点インデックス配列
-	static std::vector<unsigned short> indices;
+	std::vector<unsigned short> indices;
 	//マテリアル
-	static Material material;
+	Material material;
+
+	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
 };
 
 Model::Model()
