@@ -45,14 +45,14 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	object3d1->Initialize();
 
 	object3d2 = Object3d::Create();
-	object3d2->SetPosition({ 5.0f,5.0f,5.0f });
+	object3d2->SetPosition({ 30.0f,10.0f,0.0f });
 	object3d2->Initialize();
 
 	//前景スプライト生成
 	//座標{0,0}にテクスチャ2番のスプライトを生成
 	sprite1 = Sprite::Create(2, { 0.0f,0.0f });
 	//座標{500,500}にテクスチャ2番のスプライトを生成
-	sprite2 = Sprite::Create(2, { 500.0f,500.0f },{1.0f,0.0f,0.0f,1.0f},{0,0},false,true);
+	sprite2 = Sprite::Create(2, { 500.0f,100.0f },{1.0f,0.0f,0.0f,1.0f},{0,0},true,false);
 }
 
 void GameScene::Update()
@@ -109,7 +109,7 @@ void GameScene::Draw()
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-
+	sprite2->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
