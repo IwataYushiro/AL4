@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "CollisionPrimitive.h"
 #include "DirectXCommon.h"
 #include <DirectXMath.h>
 #include "Input.h"
@@ -65,5 +66,10 @@ private: // メンバ変数
 	/// </summary>
 	Sprite* spriteBG = nullptr;
 	Object3d* object3d = nullptr;
+
+	//当たり判定　球
+	Sphere sphere;
+	//当たり判定　平面
+	Plane plane;
 };
 

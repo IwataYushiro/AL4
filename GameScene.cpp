@@ -1,5 +1,8 @@
 ﻿#include "GameScene.h"
 #include <cassert>
+#include "Collision.h"
+#include <sstream>
+#include <iomanip>
 
 using namespace DirectX;
 
@@ -48,6 +51,14 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	sprite1 = Sprite::Create(2, { 0.0f,0.0f });
 	//座標{500,500}にテクスチャ2番のスプライトを生成
 	sprite2 = Sprite::Create(2, { 500.0f,500.0f },{1.0f,0.0f,0.0f,1.0f},{0,0},false,true);
+
+	//球の初期値を設定
+	sphere.center = XMVectorSet(0.0f, 2.0f, 0.0f, 1.0f);	//中心点座標
+	sphere.radius = 1.0f;	//半径
+	
+	//平面の初期値を設定
+	plane.normal = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);		//法線ベクトル
+	plane.distance = 0.0f;	//原点からの座標
 }
 
 void GameScene::Update()
