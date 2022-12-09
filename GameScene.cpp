@@ -96,9 +96,25 @@ void GameScene::Update()
 		<< sphere.center.m128_f32[2] << ")";		//z
 
 	debugText.Print(spherestr.str(), 50, 180, 1.0f);
+
 	//球と平面の当たり判定
-	bool hit = Collision::ChackSphere2Plane(sphere, plane);
-	if (hit) { debugText.Print("HIT", 50, 200, 1.0f); }
+	XMVECTOR inter;
+	bool hit = Collision::ChackSphere2Plane(sphere, plane,&inter);
+	if (hit) 
+	{ 
+		debugText.Print("HIT", 50, 200, 1.0f);
+
+		//stringstreamをリセットし、交点座標を埋め込む
+		spherestr.str("");
+		spherestr.clear();
+		spherestr << "("
+			<< std::fixed << std::setprecision(2)
+			<< inter.m128_f32[0] << ","
+			<< inter.m128_f32[1] << ","
+			<< inter.m128_f32[2] << ")";
+
+		debugText.Print(spherestr.str(), 50, 220, 1.0f);
+	}
 
 
 	//スペースキースプライト移動
