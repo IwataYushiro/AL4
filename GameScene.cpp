@@ -14,6 +14,7 @@ GameScene::~GameScene()
 {
 	delete spriteBG;
 	delete object3d;
+	delete model;
 
 	//前景スプライト解放
 	delete sprite1;
@@ -29,6 +30,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	this->dxCommon = dxCommon;
 	this->input = input;
 
+	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::kWindowWidth, WinApp::kWindowHeight);
+
 	// デバッグテキスト用テクスチャ読み込み
 	Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png");
 	// デバッグテキスト初期化
@@ -43,8 +46,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	
 	// 3Dオブジェクト生成
+	model = Model::LoadFromOBJ("sphere");
 	object3d = Object3d::Create();
-	object3d->Update();
+	
+	object3d->SetModel(model);
 
 	//前景スプライト生成
 	//座標{0,0}にテクスチャ2番のスプライトを生成
@@ -99,9 +104,9 @@ void GameScene::Update()
 
 	//球と平面の当たり判定
 	XMVECTOR inter;
-	bool hit = Collision::ChackSphere2Plane(sphere, plane,&inter);
-	if (hit) 
-	{ 
+	bool hit = Collision::ChackSphere2Plane(sphere, plane, &inter);
+	if (hit)
+	{
 		debugText.Print("HIT", 50, 200, 1.0f);
 
 		//stringstreamをリセットし、交点座標を埋め込む
@@ -135,6 +140,9 @@ void GameScene::Update()
 		if (input->PushKey(DIK_D)) { Object3d::CameraMoveVector({ -1.0f,0.0f,0.0f }); }
 		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ +1.0f,0.0f,0.0f }); }
 	}
+
+	object3d->SetPosition({ sphere.center.m128_f32[0]
+,sphere.center.m128_f32[1],sphere.center.m128_f32[2] });
 
 	object3d->Update();
 }
