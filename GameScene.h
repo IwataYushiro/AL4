@@ -65,8 +65,11 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	Sprite* spriteBG = nullptr;
-	Object3d* object3d = nullptr;
-	Model* model = nullptr;
+	Object3d* objSphere = nullptr;
+	Object3d* objGround = nullptr;
+
+	Model* modelSphere = nullptr;
+	Model* modelGround = nullptr;
 
 	//当たり判定　球
 	Sphere sphere;

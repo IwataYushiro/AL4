@@ -13,8 +13,10 @@ GameScene::GameScene()
 GameScene::~GameScene()
 {
 	delete spriteBG;
-	delete object3d;
-	delete model;
+	delete objSphere;
+	delete objGround;
+	delete modelSphere;
+	delete modelGround;
 
 	//前景スプライト解放
 	delete sprite1;
@@ -46,11 +48,15 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	
 	// 3Dオブジェクト生成
-	model = Model::LoadFromOBJ("sphere");
-	object3d = Object3d::Create();
+	modelSphere = Model::LoadFromOBJ("sphere");
+	modelGround = Model::LoadFromOBJ("ground");
 	
-	object3d->SetModel(model);
-
+	objSphere = Object3d::Create();
+	objGround = Object3d::Create();
+	
+	objSphere->SetModel(modelSphere);
+	objGround->SetModel(modelGround);
+	
 	//前景スプライト生成
 	//座標{0,0}にテクスチャ2番のスプライトを生成
 	sprite1 = Sprite::Create(2, { 0.0f,0.0f });
@@ -72,7 +78,7 @@ void GameScene::Update()
 	//if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	//{
 	//	// 現在の座標を取得
-	//	XMFLOAT3 position = object3d->GetPosition();
+	//	XMFLOAT3 position = objSphere->GetPosition();
 
 	//	// 移動後の座標を計算
 	//	if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
@@ -81,7 +87,7 @@ void GameScene::Update()
 	//	else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
 
 	//	// 座標の変更を反映
-	//	object3d->SetPosition(position);
+	//	objSphere->SetPosition(position);
 	//}
 	//球移動
 	XMVECTOR moveY = XMVectorSet(0.0f, 0.01f, 0.0f, 0.0f);
@@ -141,10 +147,11 @@ void GameScene::Update()
 		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ +1.0f,0.0f,0.0f }); }
 	}
 
-	object3d->SetPosition({ sphere.center.m128_f32[0]
+	objSphere->SetPosition({ sphere.center.m128_f32[0]
 ,sphere.center.m128_f32[1],sphere.center.m128_f32[2] });
 
-	object3d->Update();
+	objSphere->Update();
+	objGround->Update();
 }
 
 void GameScene::Draw()
@@ -173,7 +180,8 @@ void GameScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	object3d->Draw();
+	objSphere->Draw();
+	objGround->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
