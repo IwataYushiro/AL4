@@ -70,6 +70,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	//平面の初期値を設定
 	plane.normal = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);		//法線ベクトル
 	plane.distance = 0.0f;	//原点からの座標
+	
+	//三角形の初期値の設定
+	triangle.p0 = XMVectorSet(-1.0f, 0.0f, -1.0f, 1.0f);
+	triangle.p1 = XMVectorSet(-1.0f, 0.0f, +1.0f, 1.0f);
+	triangle.p2 = XMVectorSet(+1.0f, 0.0f, -1.0f, 1.0f);
+	triangle.normal = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 }
 
 void GameScene::Update()
@@ -113,7 +119,7 @@ void GameScene::Update()
 	bool hit = Collision::ChackSphere2Plane(sphere, plane, &inter);
 	if (hit)
 	{
-		debugText.Print("HIT", 50, 200, 1.0f);
+		debugText.Print("HIT Plane!", 50, 200, 1.0f);
 
 		//stringstreamをリセットし、交点座標を埋め込む
 		spherestr.str("");
@@ -126,6 +132,25 @@ void GameScene::Update()
 
 		debugText.Print(spherestr.str(), 50, 220, 1.0f);
 	}
+
+	//球と三角形の当たり判定
+	//XMVECTOR inter;
+	//bool hit = Collision::ChackSphere2Triangle(sphere, triangle, &inter);
+	//if (hit)
+	//{
+	//	debugText.Print("HIT Triangle!", 50, 240, 1.0f);
+
+	//	//stringstreamをリセットし、交点座標を埋め込む
+	//	spherestr.str("");
+	//	spherestr.clear();
+	//	spherestr << "("
+	//		<< std::fixed << std::setprecision(2)
+	//		<< inter.m128_f32[0] << ","
+	//		<< inter.m128_f32[1] << ","
+	//		<< inter.m128_f32[2] << ")";
+
+	//	debugText.Print(spherestr.str(), 50, 260, 1.0f);
+	//}
 
 
 	//スペースキースプライト移動
