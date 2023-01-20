@@ -114,31 +114,12 @@ void GameScene::Update()
 
 	debugText.Print(spherestr.str(), 50, 180, 1.0f);
 
-	//球と平面の当たり判定
-	XMVECTOR inter;
-	bool hit = Collision::ChackSphere2Plane(sphere, plane, &inter);
-	if (hit)
-	{
-		debugText.Print("HIT Plane!", 50, 200, 1.0f);
-
-		//stringstreamをリセットし、交点座標を埋め込む
-		spherestr.str("");
-		spherestr.clear();
-		spherestr << "("
-			<< std::fixed << std::setprecision(2)
-			<< inter.m128_f32[0] << ","
-			<< inter.m128_f32[1] << ","
-			<< inter.m128_f32[2] << ")";
-
-		debugText.Print(spherestr.str(), 50, 220, 1.0f);
-	}
-
-	//球と三角形の当たり判定
+	////球と平面の当たり判定
 	//XMVECTOR inter;
-	//bool hit = Collision::ChackSphere2Triangle(sphere, triangle, &inter);
+	//bool hit = Collision::ChackSphere2Plane(sphere, plane, &inter);
 	//if (hit)
 	//{
-	//	debugText.Print("HIT Triangle!", 50, 240, 1.0f);
+	//	debugText.Print("HIT Plane!", 50, 200, 1.0f);
 
 	//	//stringstreamをリセットし、交点座標を埋め込む
 	//	spherestr.str("");
@@ -149,8 +130,27 @@ void GameScene::Update()
 	//		<< inter.m128_f32[1] << ","
 	//		<< inter.m128_f32[2] << ")";
 
-	//	debugText.Print(spherestr.str(), 50, 260, 1.0f);
+	//	debugText.Print(spherestr.str(), 50, 220, 1.0f);
 	//}
+
+	//球と三角形の当たり判定
+	XMVECTOR inter;
+	bool hit = Collision::ChackSphere2Triangle(sphere, triangle, &inter);
+	if (hit)
+	{
+		debugText.Print("HIT Triangle!", 50, 240, 1.0f);
+
+		//stringstreamをリセットし、交点座標を埋め込む
+		spherestr.str("");
+		spherestr.clear();
+		spherestr << "("
+			<< std::fixed << std::setprecision(2)
+			<< inter.m128_f32[0] << ","
+			<< inter.m128_f32[1] << ","
+			<< inter.m128_f32[2] << ")";
+
+		debugText.Print(spherestr.str(), 50, 260, 1.0f);
+	}
 
 
 	//スペースキースプライト移動
