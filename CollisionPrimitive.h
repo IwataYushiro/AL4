@@ -17,7 +17,7 @@ struct Plane
 	//原点からの座標
 	float distance = 0.0f;
 };
-
+//三角形
 struct Triangle
 {
 	//頂点座標3つ
@@ -27,4 +27,12 @@ struct Triangle
 
 	//法線ベクトル
 	DirectX::XMVECTOR	normal;
+};
+//レイ(半直線)
+struct Ray
+{
+	//始点座標
+	DirectX::XMVECTOR	start = { 0.0f,0.0f,0.0f,1.0f };
+	//方向
+	DirectX::XMVECTOR	dir = { 1.0f,0.0f,0.0f,0.0f };
 };
