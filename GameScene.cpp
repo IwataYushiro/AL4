@@ -132,9 +132,9 @@ void GameScene::Update()
 	std::ostringstream raystr;
 	raystr << "Ray Start:("
 		<< std::fixed << std::setprecision(2)		//小数点以下2桁まで
-		<< sphere.center.m128_f32[0] << ","			//x
-		<< sphere.center.m128_f32[1] << ","			//y
-		<< sphere.center.m128_f32[2] << ")";		//z
+		<<ray.start.m128_f32[0] << ","			//x
+		<<ray.start.m128_f32[1] << ","			//y
+		<<ray.start.m128_f32[2] << ")";			//z
 
 	debugText.Print(raystr.str(), 50, 180, 1.0f);
 
@@ -195,6 +195,7 @@ void GameScene::Update()
 
 		debugText.Print(raystr.str(), 50, 260, 1.0f);
 	}
+
 
 	//スペースキースプライト移動
 	if (input->PushKey(DIK_SPACE))
