@@ -27,6 +27,9 @@ struct Triangle
 
 	//法線ベクトル
 	DirectX::XMVECTOR	normal;
+
+	//法線の計算
+	void ComputeNormal();
 };
 //レイ(半直線)
 struct Ray
