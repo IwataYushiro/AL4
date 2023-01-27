@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="BaseCollision.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="CollisionPrimitive.h" />
     <ClInclude Include="CollisionTypes.h" />
     <ClInclude Include="DebugText.h" />
