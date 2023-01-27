@@ -64,7 +64,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	sprite2 = Sprite::Create(2, { 500.0f,500.0f }, { 1.0f,0.0f,0.0f,1.0f }, { 0,0 }, false, true);
 
 	//球の初期値を設定
-	sphere.center = XMVectorSet(0.0f, 2.0f, 0.0f, 1.0f);	//中心点座標
+	sphere.center = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);	//中心点座標
 	sphere.radius = 1.0f;	//半径
 
 	//平面の初期値を設定
@@ -197,12 +197,39 @@ void GameScene::Update()
 	//}
 	
 	//レイと三角形の当たり判定
+	//XMVECTOR inter;
+	//float distance;
+	//bool hit = Collision::ChackRay2Triangle(ray, triangle, &distance, &inter);
+	//if (hit)
+	//{
+	//	debugText.Print("Ray HIT Triangle!", 50, 240, 1.0f);
+
+	//	//stringstreamをリセットし、交点座標を埋め込む
+	//	raystr.str("");
+	//	raystr.clear();
+	//	raystr << "inter:("
+	//		<< std::fixed << std::setprecision(2)
+	//		<< inter.m128_f32[0] << ","
+	//		<< inter.m128_f32[1] << ","
+	//		<< inter.m128_f32[2] << ")";
+
+	//	debugText.Print(raystr.str(), 50, 260, 1.0f);
+
+	//	raystr.str("");
+	//	raystr.clear();
+	//	raystr << "distance:("
+	//		<< std::fixed << std::setprecision(2)
+	//		<< distance << ")";
+
+	//	debugText.Print(raystr.str(), 50, 280, 1.0f);
+	//}
+
 	XMVECTOR inter;
 	float distance;
-	bool hit = Collision::ChackRay2Triangle(ray, triangle, &distance, &inter);
+	bool hit = Collision::ChackRay2Sphere(ray, sphere, &distance, &inter);
 	if (hit)
 	{
-		debugText.Print("Ray HIT Triangle!", 50, 240, 1.0f);
+		debugText.Print("Ray HIT Sphere!", 50, 240, 1.0f);
 
 		//stringstreamをリセットし、交点座標を埋め込む
 		raystr.str("");

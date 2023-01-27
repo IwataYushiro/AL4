@@ -2,7 +2,7 @@
 
 using namespace DirectX;
 
-bool Collision::ChackSphere2Plane(const Sphere& sphere, const Plane& plane, DirectX::XMVECTOR* inter)
+bool Collision::ChackSphere2Plane(const Sphere& sphere, const Plane& plane,XMVECTOR* inter)
 {
 	//座標系の原点から球の中心座標への距離
 	XMVECTOR distV = XMVector3Dot(sphere.center, plane.normal);
@@ -20,7 +20,7 @@ bool Collision::ChackSphere2Plane(const Sphere& sphere, const Plane& plane, Dire
 	return true;
 }
 
-void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Triangle& triangle, DirectX::XMVECTOR* closest)
+void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Triangle& triangle, XMVECTOR* closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック
 	XMVECTOR p0_p1 = triangle.p1 - triangle.p0;
@@ -94,7 +94,7 @@ void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Tr
 	*closest = triangle.p0 + p0_p1 * v + p0_p2 * w;
 }
 
-bool Collision::ChackSphere2Triangle(const Sphere& sphere, const Triangle& triangle, DirectX::XMVECTOR* inter)
+bool Collision::ChackSphere2Triangle(const Sphere& sphere, const Triangle& triangle,XMVECTOR* inter)
 {
 	XMVECTOR p;
 	//球の中心に対する最近接点である三角形上にある点pを見つける
@@ -116,7 +116,7 @@ bool Collision::ChackSphere2Triangle(const Sphere& sphere, const Triangle& trian
 	return true;
 }
 
-bool Collision::ChackRay2Plane(const Ray& ray, const Plane& plane, float* distance, DirectX::XMVECTOR* inter)
+bool Collision::ChackRay2Plane(const Ray& ray, const Plane& plane, float* distance,XMVECTOR* inter)
 {
 	//誤差吸収用の微小な値
 	const float epsilon = 1.0e-5f;
@@ -140,7 +140,7 @@ bool Collision::ChackRay2Plane(const Ray& ray, const Plane& plane, float* distan
 	return true;
 }
 
-bool Collision::ChackRay2Triangle(const Ray& ray, const Triangle& triangle, float* distance, DirectX::XMVECTOR* inter)
+bool Collision::ChackRay2Triangle(const Ray& ray, const Triangle& triangle, float* distance,XMVECTOR* inter)
 {
 	//三角形が乗っている平面を算出
 	Plane plane;
@@ -179,5 +179,27 @@ bool Collision::ChackRay2Triangle(const Ray& ray, const Triangle& triangle, floa
 		*inter = interPlane;
 	}
 
+	return true;
+}
+
+bool Collision::ChackRay2Sphere(const Ray& ray, const Sphere& sphere, float* distance, DirectX::XMVECTOR* inter)
+{
+	XMVECTOR m = ray.start - sphere.center;
+	float b = XMVector3Dot(m, ray.dir).m128_f32[0];
+	float c = XMVector3Dot(m, m).m128_f32[0] - sphere.radius * sphere.radius;
+	//rayの始点がsphereの外側にあり(c>0)、
+	//rayがsphereから離れていく方向を指している場合(b>0)、当たらない
+	if (c > 0.0f && b > 0.0f) { return false; }
+	float discr = b * b - c;
+	//負の判別式はレイが球を外れていることに一致
+	if (discr < 0.0f) { return false; }
+	//レイは球と交差している
+	//交差する球の最小の値 t を計算
+	float t = -b - sqrtf(discr);
+	//tが負である場合、レイは球の内側から開始しているのでtを零にクランプ
+	if (t < 0)t = 0.0f;
+	if (distance) { *distance = t; }
+	if (inter) { *inter = ray.start + t * ray.dir; }
+	
 	return true;
 }
