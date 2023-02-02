@@ -78,6 +78,17 @@ private: // メンバ変数
 	Model* modelGround = nullptr;
 	Model* modelRay = nullptr;
 
+	//シーン
+	enum Scene
+	{
+		SxP,
+		RxP,
+		RxS,
+	};
+
+	int scene;
+	bool isReverseSphere=false;
+	bool isReverseRay=false;
 	//当たり判定　球
 	Sphere sphere;
 	//当たり判定　平面

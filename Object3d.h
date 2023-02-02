@@ -178,6 +178,9 @@ public: //アクセッサ置き場
 	//回転
 	const XMFLOAT3& GetRotation() const { return rotation; }
 	void SetRotation(const XMFLOAT3& rotation) { this->rotation = rotation; }
+	//色
+	const XMFLOAT4& GetColor() const { return color; }
+	void SetColor(const XMFLOAT4& color) { this->color = color; }
 	//ワールド座標
 	const XMMATRIX& GetWorld() const { return matWorld; }
 	void SetWorld(const XMMATRIX& matWorld) { this->matWorld = matWorld; }
