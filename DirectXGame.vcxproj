@@ -159,7 +159,7 @@
     <None Include="Resources\shaders\BasicShaderHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseCollision.h" />
+    <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionInfo.h" />
     <ClInclude Include="CollisionPrimitive.h" />

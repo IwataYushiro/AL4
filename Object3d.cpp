@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <Vector>
+#include "BaseCollider.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -29,7 +30,15 @@ XMFLOAT3 Object3d::up = { 0, 1, 0 };
 ComPtr<ID3DBlob> Object3d::rootSigBlob;
 ComPtr<ID3DBlob> Object3d::vsBlob; // 頂点シェーダオブジェクト
 ComPtr<ID3DBlob> Object3d::psBlob;	// ピクセルシェーダオブジェクト
-ComPtr<ID3DBlob> Object3d::errorBlob; // エラーオブジェクト
+ComPtr<ID3DBlob> Object3d::errorBlob;
+Object3d::~Object3d()
+{
+	if (collider)
+	{
+		delete collider;
+	}
+}
+// エラーオブジェクト
 void Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 
@@ -316,6 +325,8 @@ bool Object3d::Initialize()
 	assert(SUCCEEDED(result));
 
 	return true;
+
+	name = typeid(*this).name();
 }
 
 void Object3d::Update()
@@ -349,6 +360,12 @@ void Object3d::Update()
 	//constMap0->color = color;
 	constMap0->mat = matWorld * matView * matProjection;	// 行列の合成
 	constBuffB0->Unmap(0, nullptr);
+
+	//当たり判定更新
+	if (collider)
+	{
+		collider->Update();
+	}
 }
 
 void Object3d::Draw()
@@ -367,4 +384,10 @@ void Object3d::Draw()
 
 	//モデルを描画
 	model_->Draw(cmdList, 1);
+}
+
+void Object3d::SetCollider(BaseCollider* collider)
+{
+	collider->SetObject(this);
+	this->collider = collider;
 }

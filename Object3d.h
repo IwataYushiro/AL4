@@ -7,12 +7,19 @@
 #include <d3dx12.h>
 #include "Model.h"
 
+#include "CollisionInfo.h"
+
+class BaseCollider;
+
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
 class Object3d
 {
-private: // エイリアス
+public://コンストラクタ等
+	Object3d() = default;
+	virtual ~Object3d();
+protected: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
@@ -138,19 +145,28 @@ private:// 静的メンバ関数
 	static void UpdateViewMatrix();
 
 public: // メンバ関数
-	bool Initialize();
+	virtual bool Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	virtual void Draw();
 
+	//コライダーのセット
+	void SetCollider(BaseCollider* collider);
 
-private: // メンバ変数
+	//衝突時のコールバック
+	virtual void OnCollision(const CollisionInfo& info) {}
+protected: // メンバ変数
+
+	//クラス名
+	const char* name = nullptr;
+	//コライダー
+	BaseCollider* collider = nullptr;
 	//モデル
 	Model* model_ = nullptr;
 
