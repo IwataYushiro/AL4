@@ -143,7 +143,7 @@ void GameScene::Update()
 		hitSP = Collision::ChackSphere2Plane(sphere, plane, &interSP);
 		if (hitSP)
 		{
-			colorSP = { 1.0f,0.0f,0.0f,1.0f };
+			colorSP = { 1.0f,1.0f,0.0f,1.0f };
 			objSphere->SetColor(colorSP);
 			debugText.Print("HIT Plane!", 700, 180, 1.0f);
 
@@ -167,6 +167,8 @@ void GameScene::Update()
 		if (input->TriggerKey(DIK_SPACE))
 		{
 			ray.start = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);		//原点やや上
+			colorSP = { 1.0f,1.0f,1.0f,1.0f };
+			objSphere->SetColor(colorSP);
 			scene = RxP;
 			break;
 		}
@@ -187,10 +189,10 @@ void GameScene::Update()
 			ray.start += rayMoveX;
 		}
 
-		if (ray.start.m128_f32[0] >= 20.0f) {
+		if (ray.start.m128_f32[0] >= 10.0f) {
 			isReverseRay = true;
 		}
-		if (ray.start.m128_f32[0] <= -20.0f) {
+		if (ray.start.m128_f32[0] <= -10.0f) {
 			isReverseRay = false;
 		}
 
@@ -231,6 +233,8 @@ void GameScene::Update()
 		if (input->TriggerKey(DIK_SPACE))
 		{
 			sphere.center = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);	//中心点座標
+			colorRP = { 1.0f,1.0f,1.0f,1.0f };
+			objGround->SetColor(colorRP);
 			scene = SxP;
 			break;
 		}
