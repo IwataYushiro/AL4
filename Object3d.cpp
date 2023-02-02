@@ -35,6 +35,8 @@ Object3d::~Object3d()
 {
 	if (collider)
 	{
+		//CollisionManagerから登録解除
+		
 		delete collider;
 	}
 }
