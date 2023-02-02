@@ -15,8 +15,11 @@ GameScene::~GameScene()
 	delete spriteBG;
 	delete objSphere;
 	delete objGround;
+	delete objRay;
+
 	delete modelSphere;
 	delete modelGround;
+	delete modelRay;
 
 	//前景スプライト解放
 	delete sprite1;
@@ -50,12 +53,15 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// 3Dオブジェクト生成
 	modelSphere = Model::LoadFromOBJ("sphere");
 	modelGround = Model::LoadFromOBJ("ground");
+	modelRay = Model::LoadFromOBJ("ray");
 
 	objSphere = Object3d::Create();
 	objGround = Object3d::Create();
+	objRay = Object3d::Create();
 
 	objSphere->SetModel(modelSphere);
 	objGround->SetModel(modelGround);
+	objRay->SetModel(modelRay);
 
 	//前景スプライト生成
 	//座標{0,0}にテクスチャ2番のスプライトを生成
@@ -78,7 +84,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	triangle.normal = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);	//上向き
 
 	//レイの初期値を設定
-	ray.start = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);		//原点やや上
+	ray.start = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);		//原点やや上
 	ray.dir = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);			//下向き
 }
 
@@ -132,9 +138,9 @@ void GameScene::Update()
 	std::ostringstream raystr;
 	raystr << "Ray Start:("
 		<< std::fixed << std::setprecision(2)		//小数点以下2桁まで
-		<<ray.start.m128_f32[0] << ","			//x
-		<<ray.start.m128_f32[1] << ","			//y
-		<<ray.start.m128_f32[2] << ")";			//z
+		<< ray.start.m128_f32[0] << ","			//x
+		<< ray.start.m128_f32[1] << ","			//y
+		<< ray.start.m128_f32[2] << ")";			//z
 
 	debugText.Print(raystr.str(), 50, 180, 1.0f);
 
@@ -195,7 +201,7 @@ void GameScene::Update()
 
 	//	debugText.Print(raystr.str(), 50, 260, 1.0f);
 	//}
-	
+
 	//レイと三角形の当たり判定
 	//XMVECTOR inter;
 	//float distance;
@@ -272,10 +278,14 @@ void GameScene::Update()
 	}
 
 	objSphere->SetPosition({ sphere.center.m128_f32[0]
-,sphere.center.m128_f32[1],sphere.center.m128_f32[2] });
+	,sphere.center.m128_f32[1],sphere.center.m128_f32[2] });
+	
+	objRay->SetPosition({ ray.start.m128_f32[0],
+	ray.start.m128_f32[1], ray.start.m128_f32[2], });
 
 	objSphere->Update();
 	objGround->Update();
+	objRay->Update();
 }
 
 void GameScene::Draw()
@@ -306,6 +316,7 @@ void GameScene::Draw()
 	// 3Dオブクジェクトの描画
 	objSphere->Draw();
 	objGround->Draw();
+	objRay->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
