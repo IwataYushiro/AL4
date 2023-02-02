@@ -6,6 +6,15 @@ class Collision
 {
 public:
 	/// <summary>
+	/// ‹…‚Æ‹…‚Ì“–‚½‚è”»’è
+	/// </summary>
+	/// <param name="sphere">‹…</param>
+	/// <param name="sphere2">‹…2</param>
+	/// <param name="inter">Œğ“_</param>
+	/// <returns>Œğ·‚µ‚Ä‚¢‚é‚©”Û‚©</returns>
+	static bool ChackSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2,
+		DirectX::XMVECTOR* inter = nullptr);
+	/// <summary>
 	/// ‹…‚Æ•½–Ê‚Ì“–‚½‚è”»’è
 	/// </summary>
 	/// <param name="sphere">‹…</param>

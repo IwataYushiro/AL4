@@ -2,6 +2,34 @@
 
 using namespace DirectX;
 
+bool Collision::ChackSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter)
+{
+	//判定対象A,Bの座標
+	XMVECTOR posA = sphere1.center;
+	XMVECTOR posB = sphere2.center;
+	XMVECTOR posAB;
+	//判定対象A,Bの半径
+	float radiusA = sphere1.radius;
+	float radiusB = sphere2.radius;
+	float radiiusAB;
+
+	posAB.m128_f32[0] = (posB.m128_f32[0] - posA.m128_f32[0]) * (posB.m128_f32[0] - posA.m128_f32[0]);
+	posAB.m128_f32[1] = (posB.m128_f32[1] - posA.m128_f32[1]) * (posB.m128_f32[1] - posA.m128_f32[1]);
+	posAB.m128_f32[2] = (posB.m128_f32[2] - posA.m128_f32[2]) * (posB.m128_f32[2] - posA.m128_f32[2]);
+	
+	radiiusAB = (radiusA + radiusB) * (radiusA * radiusB);
+
+	if (inter)
+	{
+		*inter = posAB;
+	}
+	if (radiiusAB >= (posAB.m128_f32[0] + posAB.m128_f32[1] + posAB.m128_f32[2])) {
+		return true;
+	}
+
+	return false;
+}
+
 bool Collision::ChackSphere2Plane(const Sphere& sphere, const Plane& plane,XMVECTOR* inter)
 {
 	//座標系の原点から球の中心座標への距離
