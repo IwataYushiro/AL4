@@ -324,6 +324,8 @@ void GameScene::Update()
 		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ +0.3f,0.0f,0.0f }); }
 	}
 
+	debugText.Print("SPACE SceneChange", 400, 20, 3.0f);
+
 	objSphere->Update();
 	objGround->Update();
 	objRay->Update();
