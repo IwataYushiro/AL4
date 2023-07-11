@@ -8,6 +8,8 @@
 #include "Object3d.h"
 #include "DebugText.h"
 
+class CollisionManager;
+class Player;
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -72,9 +74,11 @@ private: // メンバ変数
 	Sprite* spriteBG = nullptr;
 	Object3d* objSphere = nullptr;
 	Object3d* objGround = nullptr;
+	Player* objFighter = nullptr;
 
 	Model* modelSphere = nullptr;
 	Model* modelGround = nullptr;
+	Model* modelFighter = nullptr;
 
 	//当たり判定　球
 	Sphere sphere;
@@ -84,5 +88,7 @@ private: // メンバ変数
 	Triangle triangle;
 	//当たり判定　レイ
 	Ray ray;
+	//衝突マネージャ
+	CollisionManager* colManager = nullptr;
 };
 

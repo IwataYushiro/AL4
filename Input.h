@@ -45,5 +45,8 @@ private: // メンバ変数
 	ComPtr<IDirectInputDevice8> devkeyboard;
 	BYTE key[256] = {};
 	BYTE keyPre[256] = {};
+
+public://シングルトンインスタンス
+	static Input* GetInstance();
 };
 

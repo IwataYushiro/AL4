@@ -1,4 +1,7 @@
 ﻿#include "GameScene.h"
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "Player.h"
 #include <cassert>
 #include "Collision.h"
 #include <sstream>
@@ -50,6 +53,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// 3Dオブジェクト生成
 	modelSphere = Model::LoadFromOBJ("sphere");
 	modelGround = Model::LoadFromOBJ("ground");
+	
 
 	objSphere = Object3d::Create();
 	objGround = Object3d::Create();

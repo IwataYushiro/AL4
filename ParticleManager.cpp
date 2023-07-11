@@ -35,6 +35,12 @@ D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ParticleManager::VertexPosScale ParticleManager::vertices[vertexCount];
 //unsigned short Object3d::indices[indexCount];
 
+ParticleManager* ParticleManager::GetInstance()
+{
+	static ParticleManager ins;
+	return &ins;
+}
+
 void ParticleManager::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 	// nullptrチェック

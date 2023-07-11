@@ -1,5 +1,11 @@
 ﻿#include "DebugText.h"
 
+DebugText* DebugText::GetInstance()
+{
+	static DebugText instance;
+	return &instance;
+}
+
 DebugText::DebugText()
 {
 }
