@@ -87,24 +87,6 @@ void ParticleManager::PostDraw()
 	ParticleManager::cmdList = nullptr;
 }
 
-ParticleManager* ParticleManager::Create()
-{
-	// 3Dオブジェクトのインスタンスを生成
-	ParticleManager* object3d = new ParticleManager();
-	if (object3d == nullptr) {
-		return nullptr;
-	}
-
-	// 初期化
-	if (!object3d->Initialize()) {
-		delete object3d;
-		assert(0);
-		return nullptr;
-	}
-
-	return object3d;
-}
-
 void ParticleManager::SetEye(XMFLOAT3 eye)
 {
 	ParticleManager::eye = eye;
@@ -614,7 +596,7 @@ void ParticleManager::UpdateViewMatrix()
 #pragma endregion
 }
 
-bool ParticleManager::Initialize()
+void ParticleManager::Initialize()
 {
 	// nullptrチェック
 	assert(device);
@@ -633,8 +615,6 @@ bool ParticleManager::Initialize()
 		D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&constBuff));
 	assert(SUCCEEDED(result));
-
-	return true;
 }
 
 void ParticleManager::Update()

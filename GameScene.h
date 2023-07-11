@@ -2,6 +2,7 @@
 
 #include "CollisionPrimitive.h"
 #include "DirectXCommon.h"
+#include "ParticleManager.h"
 #include <DirectXMath.h>
 #include "Input.h"
 #include "Sprite.h"
@@ -42,7 +43,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, Input* input);
+	void Initialize();
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -54,6 +55,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	//球とレイ
+	void IsCollisionSphereAndRay();
 	//当たり判定　球と平面
 	void IsCollisionSphereAndPlane();
 	//当たり判定　球と三角形
@@ -67,7 +70,8 @@ private: // メンバ変数
 	//スプライト
 	Sprite* sprite1 = nullptr;
 	Sprite* sprite2 = nullptr;
-
+	//パーティクル
+	ParticleManager* pm = nullptr;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

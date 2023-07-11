@@ -10,6 +10,8 @@ public:
 	bool Initialize()override;
 	//XV
 	void Update()override;
+	//Particle
+	void DrawParticle(ID3D12GraphicsCommandList* cmdList);
 	//“–‚½‚è”»’è
 	void OnCollision(const CollisionInfo& info)override;
 };

@@ -8,7 +8,7 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 	// 汎用機能
 	WinApp* win = nullptr;
 	DirectXCommon* dxCommon = nullptr;
-	Input* input = nullptr;	
+	Input* input = nullptr;
 	GameScene* gameScene = nullptr;
 
 	// ゲームウィンドウの作成
@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 
 #pragma region 汎用機能初期化
 	// 入力の初期化
-	input = new Input();
+	input = Input::GetInstance();
 	input->Initialize(win->GetHInstance(), win->GetHwnd());
 
 	// スプライト静的初期化
@@ -29,11 +29,13 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 	
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::kWindowWidth, WinApp::kWindowHeight);
+	ParticleManager::StaticInitialize(dxCommon->GetDevice(), WinApp::kWindowWidth, WinApp::kWindowHeight);
+
 #pragma endregion
 
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon, input);
+	gameScene->Initialize();
 	
 	// メインループ
 	while (true)
@@ -55,8 +57,7 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 	}
 	// 各種解放
 	delete gameScene;
-	delete input;
-
+	
 	// DirectX終了処理
 	dxCommon->Finalize();
 	// ゲームウィンドウの破棄

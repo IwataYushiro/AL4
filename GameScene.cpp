@@ -18,25 +18,25 @@ GameScene::~GameScene()
 	delete spriteBG;
 	delete objSphere;
 	delete objGround;
+	delete objFighter;
 	delete modelSphere;
 	delete modelGround;
+	delete modelFighter;
 
 	//前景スプライト解放
 	delete sprite1;
 	delete sprite2;
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
+void GameScene::Initialize()
 {
 	// nullptrチェック
-	assert(dxCommon);
-	assert(input);
 
-	this->dxCommon = dxCommon;
-	this->input = input;
+	this->dxCommon = DirectXCommon::GetInstance();
+	this->input = Input::GetInstance();
 
-	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::kWindowWidth, WinApp::kWindowHeight);
 
+	colManager = CollisionManager::GetInstance();
 	// デバッグテキスト用テクスチャ読み込み
 	Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png");
 	// デバッグテキスト初期化
@@ -53,20 +53,24 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// 3Dオブジェクト生成
 	modelSphere = Model::LoadFromOBJ("sphere");
 	modelGround = Model::LoadFromOBJ("ground");
-	
+	modelFighter = Model::LoadFromOBJ("chr_sword");
 
 	objSphere = Object3d::Create();
 	objGround = Object3d::Create();
+	objFighter = Player::Create(modelFighter);
 
 	objSphere->SetModel(modelSphere);
 	objGround->SetModel(modelGround);
 
+	//コライダー追加
+	objSphere->SetCollider(new SphereCollider);
 	//前景スプライト生成
 	//座標{0,0}にテクスチャ2番のスプライトを生成
 	sprite1 = Sprite::Create(2, { 0.0f,0.0f });
 	//座標{500,500}にテクスチャ2番のスプライトを生成
 	sprite2 = Sprite::Create(2, { 500.0f,500.0f }, { 1.0f,0.0f,0.0f,1.0f }, { 0,0 }, false, true);
 
+	
 	//球の初期値を設定
 	sphere.center = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);	//中心点座標
 	sphere.radius = 1.0f;	//半径
@@ -102,63 +106,6 @@ void GameScene::Update()
 
 	//	// 座標の変更を反映
 	//	objSphere->SetPosition(position);
-	//}
-
-	////球移動
-	//XMVECTOR sphereMoveY = XMVectorSet(0.0f, 0.01f, 0.0f, 0.0f);
-	//if (input->PushKey(DIK_UP)) { sphere.center += sphereMoveY; }
-	//else if (input->PushKey(DIK_DOWN)) { sphere.center -= sphereMoveY; }
-
-	//XMVECTOR  sphereMoveX = XMVectorSet(0.01f, 0.0f, 0.0f, 0.0f);
-	//if (input->PushKey(DIK_RIGHT)) { sphere.center += sphereMoveX; }
-	//else if (input->PushKey(DIK_LEFT)) { sphere.center -= sphereMoveX; }
-
-	////stringstreamで変数の値を埋め込んで整形する
-	//std::ostringstream spherestr;
-	//spherestr << "Sphere:("
-	//	<< std::fixed << std::setprecision(2)		//小数点以下2桁まで
-	//	<< sphere.center.m128_f32[0] << ","			//x
-	//	<< sphere.center.m128_f32[1] << ","			//y
-	//	<< sphere.center.m128_f32[2] << ")";		//z
-
-	//debugText.Print(spherestr.str(), 50, 180, 1.0f);
-
-	//レイ移動
-	XMVECTOR rayMoveZ = XMVectorSet(0.0f, 0.0f, 0.01f, 0.0f);
-	if (input->PushKey(DIK_UP)) { ray.start += rayMoveZ; }
-	else if (input->PushKey(DIK_DOWN)) { ray.start -= rayMoveZ; }
-
-	XMVECTOR  rayMoveX = XMVectorSet(0.01f, 0.0f, 0.0f, 0.0f);
-	if (input->PushKey(DIK_RIGHT)) { ray.start += rayMoveX; }
-	else if (input->PushKey(DIK_LEFT)) { ray.start -= rayMoveX; }
-
-	//stringstreamで変数の値を埋め込んで整形する
-	std::ostringstream raystr;
-	raystr << "Ray Start:("
-		<< std::fixed << std::setprecision(2)		//小数点以下2桁まで
-		<<ray.start.m128_f32[0] << ","			//x
-		<<ray.start.m128_f32[1] << ","			//y
-		<<ray.start.m128_f32[2] << ")";			//z
-
-	debugText.Print(raystr.str(), 50, 180, 1.0f);
-
-	////球と平面の当たり判定
-	//XMVECTOR inter;
-	//bool hit = Collision::ChackSphere2Plane(sphere, plane, &inter);
-	//if (hit)
-	//{
-	//	debugText.Print("HIT Plane!", 50, 200, 1.0f);
-
-	//	//stringstreamをリセットし、交点座標を埋め込む
-	//	spherestr.str("");
-	//	spherestr.clear();
-	//	spherestr << "("
-	//		<< std::fixed << std::setprecision(2)
-	//		<< inter.m128_f32[0] << ","
-	//		<< inter.m128_f32[1] << ","
-	//		<< inter.m128_f32[2] << ")";
-
-	//	debugText.Print(spherestr.str(), 50, 220, 1.0f);
 	//}
 
 	//球と三角形の当たり判定
@@ -228,6 +175,115 @@ void GameScene::Update()
 	//	debugText.Print(raystr.str(), 50, 280, 1.0f);
 	//}
 
+	
+
+	//スペースキースプライト移動
+	if (input->PushKey(DIK_SPACE))
+	{
+		//現在の座標を取得
+		XMFLOAT2 position = sprite1->GetPosition();
+		//移動後の座標を計算
+		position.x += 1.0f;
+		//座標の変更を反映
+		sprite1->SetPosition(position);
+	}
+	//// カメラ移動
+	//if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	//{
+	//	if (input->PushKey(DIK_W)) { Object3d::CameraMoveVector({ 0.0f,-1.0f,0.0f }); }
+	//	else if (input->PushKey(DIK_S)) { Object3d::CameraMoveVector({ 0.0f,+1.0f,0.0f }); }
+	//	if (input->PushKey(DIK_D)) { Object3d::CameraMoveVector({ -1.0f,0.0f,0.0f }); }
+	//	else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ +1.0f,0.0f,0.0f }); }
+	//}
+
+	objSphere->SetPosition({ sphere.center.m128_f32[0]
+,sphere.center.m128_f32[1],sphere.center.m128_f32[2] });
+
+	objSphere->Update();
+	objGround->Update();
+	objFighter->Update();
+
+	
+	colManager->CheckAllCollisions();
+	
+}
+
+void GameScene::Draw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+
+#pragma region 背景スプライト描画
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+	// 背景スプライト描画
+	spriteBG->Draw();
+
+	/// <summary>
+	/// ここに背景スプライトの描画処理を追加できる
+	/// </summary>
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon->ClearDepthBuffer();
+#pragma endregion
+	
+#pragma region 3Dオブジェクト描画
+	// 3Dオブジェクト描画前処理
+	Object3d::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+	objSphere->Draw();
+	objGround->Draw();
+	objFighter->Draw();
+
+	/// <summary>
+	/// ここに3Dオブジェクトの描画処理を追加できる
+	/// </summary>
+
+	// 3Dオブジェクト描画後処理
+	Object3d::PostDraw();
+#pragma endregion
+objFighter->DrawParticle(cmdList);
+#pragma region 前景スプライト描画
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(cmdList);
+
+	/// <summary>
+	/// ここに前景スプライトの描画処理を追加できる
+	/// </summary>
+	//sprite1->Draw();
+	//sprite2->Draw();
+	// デバッグテキストの描画
+	debugText.DrawAll(cmdList);
+
+	// スプライト描画後処理
+	Sprite::PostDraw();
+#pragma endregion
+}
+
+void GameScene::IsCollisionSphereAndRay()
+{
+	//レイ移動
+	XMVECTOR rayMoveZ = XMVectorSet(0.0f, 0.0f, 0.01f, 0.0f);
+	if (input->PushKey(DIK_UP)) { ray.start += rayMoveZ; }
+	else if (input->PushKey(DIK_DOWN)) { ray.start -= rayMoveZ; }
+
+	XMVECTOR  rayMoveX = XMVectorSet(0.01f, 0.0f, 0.0f, 0.0f);
+	if (input->PushKey(DIK_RIGHT)) { ray.start += rayMoveX; }
+	else if (input->PushKey(DIK_LEFT)) { ray.start -= rayMoveX; }
+
+	//stringstreamで変数の値を埋め込んで整形する
+	std::ostringstream raystr;
+	raystr << "Ray Start:("
+		<< std::fixed << std::setprecision(2)		//小数点以下2桁まで
+		<< ray.start.m128_f32[0] << ","			//x
+		<< ray.start.m128_f32[1] << ","			//y
+		<< ray.start.m128_f32[2] << ")";			//z
+
+	debugText.Print(raystr.str(), 50, 180, 1.0f);
+
 	XMVECTOR inter;
 	float distance;
 	bool hit = Collision::ChackRay2Sphere(ray, sphere, &distance, &inter);
@@ -255,83 +311,44 @@ void GameScene::Update()
 		debugText.Print(raystr.str(), 50, 280, 1.0f);
 	}
 
-
-	//スペースキースプライト移動
-	if (input->PushKey(DIK_SPACE))
-	{
-		//現在の座標を取得
-		XMFLOAT2 position = sprite1->GetPosition();
-		//移動後の座標を計算
-		position.x += 1.0f;
-		//座標の変更を反映
-		sprite1->SetPosition(position);
-	}
-	// カメラ移動
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
-	{
-		if (input->PushKey(DIK_W)) { Object3d::CameraMoveVector({ 0.0f,-1.0f,0.0f }); }
-		else if (input->PushKey(DIK_S)) { Object3d::CameraMoveVector({ 0.0f,+1.0f,0.0f }); }
-		if (input->PushKey(DIK_D)) { Object3d::CameraMoveVector({ -1.0f,0.0f,0.0f }); }
-		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ +1.0f,0.0f,0.0f }); }
-	}
-
-	objSphere->SetPosition({ sphere.center.m128_f32[0]
-,sphere.center.m128_f32[1],sphere.center.m128_f32[2] });
-
-	objSphere->Update();
-	objGround->Update();
 }
 
-void GameScene::Draw()
+void GameScene::IsCollisionSphereAndPlane()
 {
-	// コマンドリストの取得
-	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+	//球移動
+	XMVECTOR sphereMoveY = XMVectorSet(0.0f, 0.01f, 0.0f, 0.0f);
+	if (input->PushKey(DIK_UP)) { sphere.center += sphereMoveY; }
+	else if (input->PushKey(DIK_DOWN)) { sphere.center -= sphereMoveY; }
 
-#pragma region 背景スプライト描画
-	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-	// 背景スプライト描画
-	spriteBG->Draw();
+	XMVECTOR  sphereMoveX = XMVectorSet(0.01f, 0.0f, 0.0f, 0.0f);
+	if (input->PushKey(DIK_RIGHT)) { sphere.center += sphereMoveX; }
+	else if (input->PushKey(DIK_LEFT)) { sphere.center -= sphereMoveX; }
 
-	/// <summary>
-	/// ここに背景スプライトの描画処理を追加できる
-	/// </summary>
+	//stringstreamで変数の値を埋め込んで整形する
+	std::ostringstream spherestr;
+	spherestr << "Sphere:("
+		<< std::fixed << std::setprecision(2)		//小数点以下2桁まで
+		<< sphere.center.m128_f32[0] << ","			//x
+		<< sphere.center.m128_f32[1] << ","			//y
+		<< sphere.center.m128_f32[2] << ")";		//z
 
-	// スプライト描画後処理
-	Sprite::PostDraw();
-	// 深度バッファクリア
-	dxCommon->ClearDepthBuffer();
-#pragma endregion
+	debugText.Print(spherestr.str(), 50, 180, 1.0f);
+	//球と平面の当たり判定
+	XMVECTOR inter;
+	bool hit = Collision::ChackSphere2Plane(sphere, plane, &inter);
+	if (hit)
+	{
+		debugText.Print("HIT Plane!", 50, 200, 1.0f);
 
-#pragma region 3Dオブジェクト描画
-	// 3Dオブジェクト描画前処理
-	Object3d::PreDraw(cmdList);
+		//stringstreamをリセットし、交点座標を埋め込む
+		spherestr.str("");
+		spherestr.clear();
+		spherestr << "("
+			<< std::fixed << std::setprecision(2)
+			<< inter.m128_f32[0] << ","
+			<< inter.m128_f32[1] << ","
+			<< inter.m128_f32[2] << ")";
 
-	// 3Dオブクジェクトの描画
-	objSphere->Draw();
-	objGround->Draw();
-
-	/// <summary>
-	/// ここに3Dオブジェクトの描画処理を追加できる
-	/// </summary>
-
-	// 3Dオブジェクト描画後処理
-	Object3d::PostDraw();
-#pragma endregion
-
-#pragma region 前景スプライト描画
-	// 前景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
-
-	/// <summary>
-	/// ここに前景スプライトの描画処理を追加できる
-	/// </summary>
-	//sprite1->Draw();
-	//sprite2->Draw();
-	// デバッグテキストの描画
-	debugText.DrawAll(cmdList);
-
-	// スプライト描画後処理
-	Sprite::PostDraw();
-#pragma endregion
+		debugText.Print(spherestr.str(), 50, 220, 1.0f);
+	}
 }

@@ -98,11 +98,7 @@ public: // 静的メンバ関数
 	/// </summary>
 	static void PostDraw();
 
-	/// <summary>
-	/// 3Dオブジェクト生成
-	/// </summary>
-	/// <returns></returns>
-	static ParticleManager* Create();
+
 
 	/// <summary>
 	/// 視点座標の取得
@@ -219,7 +215,7 @@ private:// 静的メンバ関数
 	static void UpdateViewMatrix();
 
 public: // メンバ関数
-	bool Initialize();
+	void Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -251,6 +247,7 @@ private: // メンバ変数
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	std::forward_list<Particle> particles;
+
 };
 
 const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs);
